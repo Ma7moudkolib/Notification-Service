@@ -17,6 +17,6 @@ jobs:
       with:
         dotnet-version: 9.0.x
     - name: Restore dependencies
-      run: dotnet restore NotificationService.sln
+      run: dotnet restore Notification-Service.sln
     - name: Build
-      run: dotnet build NotificationService.sln --no-restore --configuration Release
+      run: dotnet build Notification-Service.sln --no-restore --configuration Release
