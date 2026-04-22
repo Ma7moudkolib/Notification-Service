@@ -31,7 +31,7 @@ TestResults/
 # Docker / environment
 .env
 .env.*
-!.env.template
+.env.template
 .codex
 # Docker overrides
 docker-compose.override.yml
