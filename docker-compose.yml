@@ -5,16 +5,16 @@ services:
       dockerfile: Dockerfile
     container_name: notification-service
     depends_on:
-      kafka:
+      rabbitmq:
         condition: service_started
       redis:
         condition: service_started
     environment:
       DOTNET_ENVIRONMENT: Production
-      Kafka__BootstrapServers: ${KAFKA_BOOTSTRAP_SERVERS:-kafka:9092}
-      Kafka__Topic: ${KAFKA_TOPIC:-notifications-topic}
-      Kafka__GroupId: ${KAFKA_GROUP_ID:-notification-service}
-      Kafka__AutoOffsetReset: ${KAFKA_AUTO_OFFSET_RESET:-Earliest}
+      RabbitMQ__HostName: ${RABBITMQ_HOST:-rabbitmq}
+      RabbitMQ__UserName: ${RABBITMQ_USER:-guest}
+      RabbitMQ__Password: ${RABBITMQ_PASSWORD:-guest}
+      RabbitMQ__Port: ${RABBITMQ_PORT:-5672}
       Redis__ConnectionString: ${REDIS_CONNECTION_STRING:-redis:6379}
       Redis__KeyPrefix: notifications:processed:
       Redis__Expiry: 1.00:00:00
@@ -27,23 +27,15 @@ services:
       Twilio__FromNumber: ${TWILIO_PHONE_NUMBER}
     restart: unless-stopped
 
-  kafka:
-    image: bitnami/kafka:3.7
-    container_name: kafka
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
     ports:
-      - "9092:9092"
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      KAFKA_CFG_NODE_ID: 1
-      KAFKA_CFG_PROCESS_ROLES: broker,controller
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_KRAFT_CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
-      ALLOW_PLAINTEXT_LISTENER: "yes"
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
     restart: unless-stopped
 
   redis:

@@ -7,8 +7,8 @@ using StackExchange.Redis;
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services
-    .AddOptions<KafkaOptions>()
-    .Bind(builder.Configuration.GetSection(KafkaOptions.SectionName))
+    .AddOptions<RabbitMQSettings>()
+    .Bind(builder.Configuration.GetSection(RabbitMQSettings.SectionName))
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
@@ -50,7 +50,7 @@ builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<ISmsService, SmsService>();
 builder.Services.AddSingleton<IRedisCacheService, RedisCacheService>();
 builder.Services.AddSingleton<INotificationProcessor, NotificationProcessor>();
-builder.Services.AddHostedService<KafkaConsumerWorker>();
+builder.Services.AddHostedService<RabbitMQConsumerWorker>();
 
 await builder.Build().RunAsync();
 
