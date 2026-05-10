@@ -16,7 +16,7 @@ services:
       RabbitMQ__Password: ${RABBITMQ_PASSWORD:-guest}
       RabbitMQ__Port: ${RABBITMQ_PORT:-5672}
       Redis__ConnectionString: ${REDIS_CONNECTION_STRING:-redis:6379}
-      Redis__KeyPrefix: notifications:processed:
+      Redis__KeyPrefix: notifications:processed
       Redis__Expiry: 1.00:00:00
       Email__Host: ${SMTP_HOST}
       Email__Port: ${SMTP_PORT:-587}
@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3-management-alpine
     container_name: rabbitmq
     ports:
       - "5672:5672"
